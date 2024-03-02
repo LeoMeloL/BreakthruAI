@@ -7,6 +7,8 @@ class BreakthruGUI:
         
         screen_width = 800
         screen_height = 800
+        self.numPieces = 12
+        self.numPieces2 = 8
         
         self.cell_size = min(screen_width, screen_height) // 7
         
@@ -59,8 +61,28 @@ class BreakthruGUI:
         self.canvas.create_oval(x_center - radius, y_center - radius,
                                  x_center + radius, y_center + radius,
                                  fill=fill, outline="black")
-          
-            
+        
+    def verificar_bandeira_nos_cantos(self):
+        corners = [(0, 0), (0, 6), (6, 0), (6, 6), (6,5), (6,4), (6,3), (6,2), (6,1), (1,6), (2,6), (3,6), (4,6), (5,6)]  # Coordenadas dos cantos do tabuleiro
+        flag_position = next(iter(self.flag), None)  # Obter a posição da bandeira, se existir
+
+        if flag_position in corners:
+            print("A bandeira está em um dos cantos do tabuleiro!")
+            print("Jogo acabou")
+            exit(0)
+     
+    def check_Death(self, piece_type):
+        if piece_type == "pieces":
+            pieces = self.pieces
+        elif piece_type == "pieces2":
+            pieces = self.pieces2
+        elif piece_type == "flag":
+            pieces = self.flag
+        else:
+            return False
+
+        return len(pieces) == 0
+
     def on_canvas_click(self, event):
         # Get the clicked cell coordinates
         x, y = event.x // self.cell_size, event.y // self.cell_size
@@ -99,10 +121,39 @@ class BreakthruGUI:
                         self.flag.add((x, y))
 
                     self.selected_piece = None
+                    self.verificar_bandeira_nos_cantos()
 
                     self.canvas.delete("all")  # Clear the canvas
                     self.draw_board()
                     self.draw_pieces()  # Aqui é necessário chamar a função para redesenhar todas as peças e indicar a seleção
+                elif (x, y) in self.pieces2 and (abs(x - self.selected_piece[0]), abs(y - self.selected_piece[1])) == (1, 1):
+                    self.pieces.remove(self.selected_piece)
+                    self.pieces.add((x, y))
+                    self.pieces2.remove((x, y))
+                    self.canvas.delete("all")  # Clear the canvas
+                    self.draw_board()
+                    self.draw_pieces()
+                    self.selected_piece = None
+                    self.numPieces2 -= 1
+                    print(self.numPieces2)
+                    if self.numPieces2 == 0:
+                        print("Game ended")
+                        exit(0)
+                        
+                elif (x, y) in self.pieces and (abs(x - self.selected_piece[0]), abs(y - self.selected_piece[1])) == (1, 1):
+                    self.pieces2.remove(self.selected_piece)
+                    self.pieces2.add((x, y))
+                    self.pieces.remove((x, y))
+                    self.canvas.delete("all")  # Clear the canvas
+                    self.draw_board()
+                    self.draw_pieces()
+                    self.selected_piece2 = None
+                    self.numPieces -= 1
+                    print(self.numPieces)
+                    if self.numPieces == 0:
+                        print("Game ended")
+                        exit(0)
+                    
             else:
                 print("Invalid move. You can only move one cell at a time.")
                 self.selected_piece = None
