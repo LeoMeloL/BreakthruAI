@@ -103,6 +103,10 @@ class BreakthruGUI:
                     self.draw_pieces()  # Aqui é necessário chamar a função para redesenhar todas as peças e indicar a seleção
             else:
                 print("Invalid move. You can only move one cell at a time.")
+                self.selected_piece = None
+                self.selected_piece2 = None
+                self.selected_flag = None
+                self.draw_pieces()
     
 
             
