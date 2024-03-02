@@ -41,12 +41,12 @@ class BreakthruGUI:
             self.draw_piece(piece, fill)
         for piece in self.pieces2:
             fill = "yellow"
-            if piece == self.selected_piece2:
+            if piece == self.selected_piece:
                 fill = "lightyellow"
             self.draw_piece(piece, fill)
         for piece in self.flag:
             fill = "red"
-            if piece == self.selected_flag:
+            if piece == self.selected_piece:
                 fill = "pink"
             self.draw_piece(piece, fill)
 
@@ -83,6 +83,7 @@ class BreakthruGUI:
         
         else:
             # Check if the clicked cell is adjacent to the selected piece
+            
             if abs(x - self.selected_piece[0]) <= 1 and abs(y - self.selected_piece[1]) <= 1:
                 # Check if the destination cell is empty
                 if (x, y) not in self.pieces and (x, y) not in self.pieces2 and (x, y) not in self.flag:
@@ -98,6 +99,7 @@ class BreakthruGUI:
                         self.flag.add((x, y))
 
                     self.selected_piece = None
+
                     self.canvas.delete("all")  # Clear the canvas
                     self.draw_board()
                     self.draw_pieces()  # Aqui é necessário chamar a função para redesenhar todas as peças e indicar a seleção
